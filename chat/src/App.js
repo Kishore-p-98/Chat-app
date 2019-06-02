@@ -16,6 +16,8 @@ class App extends React.Component {
     this.state = {
       messages : []
     }
+
+    this.sendMessage = this.sendMessage.bind(this);
   }
 
 
@@ -30,18 +32,11 @@ class App extends React.Component {
       tokenProvider: Token ,
     });
     
-  /*  chatManager.connect()
-  .then(currentUser => {
-    console.log('Successful connection', currentUser)
-  })
-  .catch(err => {
-    console.log('Error on connection', err)
-  })
-  */
-
+ 
     chatManager.connect()
     .then(currentUser => {
-        currentUser.subscribeToRoom({
+        this.currentUser = currentUser;
+        this.currentUser.subscribeToRoom({
             roomId: '19419393',
             hooks: {
                 onMessage: message => {
@@ -50,11 +45,16 @@ class App extends React.Component {
             }
         })
     })
-    
-  
+
 }
-
-
+ 
+   sendMessage(text)
+  {
+    this.currentUser.sendMessage({
+      text : text,
+      roomId : '19419393',
+     })
+  }
 
 
   render() {
@@ -64,7 +64,7 @@ class App extends React.Component {
         <MessageList messages={this.state.messages} />
         <NewRoomForm />
         <RoomList />
-        <SendMessageForm />
+        <SendMessageForm  sendMessage={this.sendMessage} />
       </div>
     );
   }
