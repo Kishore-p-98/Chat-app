@@ -20,6 +20,8 @@ class App extends React.Component {
     }
 
     this.sendMessage = this.sendMessage.bind(this);
+    this.subscribeToRoom=this.subscribeToRoom.bind(this);
+    this.getRooms=this.getRooms.bind(this);
   }
 
 
@@ -38,28 +40,35 @@ class App extends React.Component {
     chatManager.connect()
     .then(currentUser => {
         this.currentUser = currentUser;
-
-        this.currentUser.getJoinableRooms()
-            .then(joinableRooms => {
-                this.setState({
-                    joinableRooms,
-                    joinedRooms: this.currentUser.rooms
-                })
-            })
-            .catch(err => console.log('error on joinableRooms: ', err))
-
-        this.currentUser.subscribeToRoom({
-            roomId: '19419393',
-            hooks: {
-                onMessage: message => {
-                    this.setState({messages : [...this.state.messages , message]});
-                }
-            }
-        })
+        this.getRooms();
     })
     .catch(err => console.log('error on connecting: ', err))
 
 }
+
+   getRooms()
+   {
+    this.currentUser.getJoinableRooms()
+    .then(joinableRooms => {
+        this.setState({
+            joinableRooms,
+            joinedRooms: this.currentUser.rooms
+        })
+    })
+    .catch(err => console.log('error on joinableRooms: ', err))
+   }
+
+   subscribeToRoom(roomId)
+   {
+    this.currentUser.subscribeToRoom({
+      roomId: roomId,
+      hooks: {
+          onMessage: message => {
+              this.setState({messages : [...this.state.messages , message]});
+          }
+      }
+     })
+   }
  
    sendMessage(text)
   {
@@ -71,12 +80,14 @@ class App extends React.Component {
 
 
   render() {
-
+     
     return (
+      
       <div className="app" >
         <MessageList messages={this.state.messages} />
         <NewRoomForm />
-        <RoomList rooms={[...this.state.joinableRooms, ...this.state.joinedRooms]} />
+        <RoomList rooms={[...this.state.joinableRooms, ...this.state.joinedRooms]} 
+          subscribeToRoom={this.subscribeToRoom}/>
         <SendMessageForm  sendMessage={this.sendMessage} />
       </div>
     );
