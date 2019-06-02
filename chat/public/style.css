@@ -1,9 +1,17 @@
-:root {
+/*:root {
     --main-color: #5ea3d0;
     --secondary-color: white;
     --main-text-color: #3e5869;
     --secondary-text-color: #b0c7d6;
     --send-message-form: #F5F5F5;
+}
+*/
+:root {
+    --main-color: #5ea3d0;
+    --secondary-color: white;
+    --main-text-color: rgb(118, 200, 215);
+    --secondary-text-color: pink;
+    --send-message-form: rgba(7, 5, 5, 0.055);
 }
 
 html, body {
