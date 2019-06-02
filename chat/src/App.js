@@ -9,6 +9,16 @@ import { tokenUrl, instanceLocator } from './config';
 
 
 class App extends React.Component {
+    
+  constructor()
+  {
+    super();
+    this.state = {
+      messages : []
+    }
+  }
+
+
 
   componentDidMount() {
     
@@ -20,21 +30,22 @@ class App extends React.Component {
       tokenProvider: Token ,
     });
     
-    chatManager.connect()
+  /*  chatManager.connect()
   .then(currentUser => {
     console.log('Successful connection', currentUser)
   })
   .catch(err => {
     console.log('Error on connection', err)
   })
+  */
 
     chatManager.connect()
     .then(currentUser => {
         currentUser.subscribeToRoom({
             roomId: '19419393',
             hooks: {
-                onNewMessage: message => {
-                    console.log('message.text: ', message.text);
+                onMessage: message => {
+                    this.setState({messages : [...this.state.messages , message]});
                 }
             }
         })
@@ -47,9 +58,10 @@ class App extends React.Component {
 
 
   render() {
+
     return (
       <div className="app" >
-        <MessageList />
+        <MessageList messages={this.state.messages} />
         <NewRoomForm />
         <RoomList />
         <SendMessageForm />
